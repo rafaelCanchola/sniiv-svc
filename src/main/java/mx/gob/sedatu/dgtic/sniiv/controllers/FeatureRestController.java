@@ -73,6 +73,20 @@ public class FeatureRestController {
 		return ResponseEntity.ok(pj);
 	}
 	
+	@GetMapping("/poligonosconteo")
+	public ResponseEntity<Integer> poligonosConteo(@RequestParam Long filter,@RequestParam Double xmin,@RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
+		Envelope en = new Envelope(xmin,xmax,ymin,ymax);
+		List<Feature> fa = featureService.findAll();
+		List<PoligonoJson> pj = new ArrayList<PoligonoJson>();
+		for(Feature p : fa) {
+			if(en.intersects(p.getPoligono().getThe_geom().getCoordinate().getX(),p.getPoligono().getThe_geom().getCoordinate().getY())) {
+				pj.add(new PoligonoJson(p.getId(),p.getPoligono().getThe_geom().toString(),p.getCvegeo(),p.getDens_ha()));
+			}
+		}
+		System.out.println("El tamaño de campos es: "+pj.size()); 
+		return ResponseEntity.ok(pj.size());
+	}
+	
 	@GetMapping("/predioidentify")
 	public ResponseEntity<List<PoligonoHash>> encontrarPunto(@RequestParam Long id){
 		Feature fa = featureService.findById(id);
