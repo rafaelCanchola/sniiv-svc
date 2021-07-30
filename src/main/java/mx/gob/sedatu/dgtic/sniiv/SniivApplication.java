@@ -24,6 +24,7 @@ public class SniivApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/poligonos").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/api/poligonosconteo").allowedOrigins(env.getProperty("app.cross.origins"));
 				registry.addMapping("/api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
 				registry.addMapping("/api/poliall").allowedOrigins(env.getProperty("app.cross.origins"));
 				registry.addMapping("/api/uploadcharge").allowedOrigins(env.getProperty("app.cross.origins"));
