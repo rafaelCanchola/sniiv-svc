@@ -9,6 +9,9 @@ import java.util.TreeMap;
 import org.locationtech.jts.geom.Envelope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,11 +47,13 @@ public class FeatureRestController {
 	//private GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),6372);
 	
 	@GetMapping("/poligonos")
-	public ResponseEntity<List<PoligonoJson>> poligonos(@RequestParam Long filter,@RequestParam Double xmin,@RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
+	public ResponseEntity<List<PoligonoJson>> poligonos(@RequestParam Long filter,@RequestParam Long pgnumber,@RequestParam Long pgsize,@RequestParam Double xmin,@RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
 		Envelope en = new Envelope(xmin,xmax,ymin,ymax);
-		List<Feature> fa = featureService.findAll();
+		//List<Feature> fa = featureService.findAll();
+		Pageable pb = PageRequest.of(pgnumber.intValue(), pgsize.intValue());
+		Page<Feature> pf = featureService.findAllPageable(pb);
 		List<PoligonoJson> pj = new ArrayList<PoligonoJson>();
-		for(Feature p : fa) {
+		for(Feature p : pf) {
 			if(en.intersects(p.getPoligono().getThe_geom().getCoordinate().getX(),p.getPoligono().getThe_geom().getCoordinate().getY())) {
 					pj.add(new PoligonoJson(p.getId(),p.getPoligono().getThe_geom().toString(),p.getCvegeo(),p.getDens_ha()));
 					}
