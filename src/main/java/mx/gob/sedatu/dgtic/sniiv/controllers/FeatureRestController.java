@@ -83,9 +83,27 @@ public class FeatureRestController {
 		String namePuntosDir = env.getProperty("app.upload.dir")+env.getProperty("app.upload.sniiv")+currentyear+env.getProperty("app.upload.sniiv.puntos");
 		String fileName = Utils.getFileNameUpload(file.getOriginalFilename().split(".zip")[0],currentyear);
 		String zipFileName = fileName + ".zip";
+		File baseDir = new File(env.getProperty("app.upload.dir")+"/sedatu");
+		File baseSniivDir = new File(env.getProperty("app.upload.dir")+env.getProperty("app.upload.sniiv"));
+		File baseSniivYearDir = new File(env.getProperty("app.upload.dir")+env.getProperty("app.upload.sniiv")+"2021/");
 		File chargeTempDir = new File(nameTempDir);
 		File chargePuntosDir = new File(namePuntosDir);
 		File fileTempDir = new File(nameTempDir+fileName);
+		if(!baseDir.exists()) {
+			if(!baseDir.mkdir()) {
+				return ResponseEntity.status(400).build();
+			}
+		}
+		if(!baseSniivDir.exists()) {
+			if(!baseSniivDir.mkdir()) {
+				return ResponseEntity.status(400).build();
+			}
+		}
+		if(!baseSniivYearDir.exists()) {
+			if(!baseSniivYearDir.mkdir()) {
+				return ResponseEntity.status(400).build();
+			}
+		}
 		if(!chargeTempDir.exists()) {
 			if(!chargeTempDir.mkdir()) {
 				return ResponseEntity.status(400).build();
