@@ -24,4 +24,9 @@ public class PnvInformesServiceImpl implements IPnvInformesService{
     public PnvInformes findById(Long id) {
         return pnvInformesDao.findById(id).get();
     }
+
+    @Override
+    public PnvInformes findByInformation(Integer anio, Integer trimestre){
+        return pnvInformesDao.findPnvInformesByAnioAndTrimestre(anio, trimestre);
+    }
 }

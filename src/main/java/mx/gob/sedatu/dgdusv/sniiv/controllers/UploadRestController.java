@@ -104,6 +104,10 @@ public class UploadRestController {
             informe.setAnio(year);
             informe.setTrimestre(trimestre.get());
             informe.setUrl(apiAlfresco.sharedUrlAlfresco(id,file.getOriginalFilename()));
+            PnvInformes find = pnvInformesService.findByInformation(informe.getAnio(),informe.getTrimestre());
+            if(find != null){
+                informe.setId(find.getId());
+            }
             pnvInformesService.save(informe);
             return ResponseEntity.ok(informe.getUrl());
         }catch (IOException e){
@@ -118,7 +122,7 @@ public class UploadRestController {
     }
 
     @PostMapping("/uploadpnv")
-    public ResponseEntity<List<PoligonoJson>> cargarPnvAcciones(@RequestParam MultipartFile file) {
+    public ResponseEntity<Integer> cargarPnvAcciones(@RequestParam MultipartFile file) {
         int csvLines = 9;
         Path tempDir = null;
         File csvFile = null;
@@ -175,9 +179,14 @@ public class UploadRestController {
                     objetivos.setPor_iniciar(Integer.parseInt(lineInArray[6]));
                     objetivos.setSin_realizar(Integer.parseInt(lineInArray[7]));
                     objetivos.setTotal(Integer.parseInt(lineInArray[8]));
+                    PnvObjetivos find = pnvObjetivosService.findByInformation(objetivos.getAnio(),objetivos.getTrimestre(),objetivos.getTipo_objetivo(),objetivos.getOrganismo());
+                    if (find != null) {
+                        objetivos.setId(find.getId());
+                    }
                     pnvObjetivosService.save(objetivos);
                 }
             }
+            return ResponseEntity.ok(200);
         }  catch (IOException e) {
             e.printStackTrace();
             if(csvFile != null) {
@@ -197,7 +206,6 @@ public class UploadRestController {
             }
             return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.ok(null);
     }
 
 

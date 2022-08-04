@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IPnvInformesDao extends JpaRepository<PnvInformes,Long> {
 
+    PnvInformes findPnvInformesByAnioAndTrimestre(Integer anio, Integer trimestre);
+
 }

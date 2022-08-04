@@ -30,4 +30,9 @@ public class PvnObjetivosServiceImpl implements IPnvObjetivosService{
     public void deleteTrimestre(Integer anio, Integer trimestre) {
         pnvObjetivosDao.deleteAllByTrimestreAndAnio(trimestre,anio);
     }
+
+    @Override
+    public PnvObjetivos findByInformation(Integer anio, Integer trimestre, Integer objetivo, String organismo) {
+        return pnvObjetivosDao.findPnvObjetivosByAnioAndTrimestreAndOrganismoAndTipo_objetivo(anio, trimestre, organismo,objetivo);
+    }
 }

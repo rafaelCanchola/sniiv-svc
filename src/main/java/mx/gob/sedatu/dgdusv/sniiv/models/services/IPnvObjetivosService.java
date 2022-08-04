@@ -11,4 +11,6 @@ public interface IPnvObjetivosService {
     PnvObjetivos findById(Long id);
 
     void deleteTrimestre(Integer anio, Integer trimestre);
+
+    PnvObjetivos findByInformation(Integer anio, Integer trimestre, Integer objetivo, String organismo);
 }

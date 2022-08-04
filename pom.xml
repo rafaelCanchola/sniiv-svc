@@ -11,7 +11,7 @@
 	<groupId>mx.gob.sedatu.dgdusv</groupId>
 	<artifactId>sniivsvc</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>sniivsvc</name>
 	<description>Sistema de Información de Indicadores de Vivienda</description>
 	<properties>

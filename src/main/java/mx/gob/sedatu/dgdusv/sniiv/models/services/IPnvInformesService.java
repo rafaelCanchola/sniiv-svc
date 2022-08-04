@@ -10,4 +10,6 @@ public interface IPnvInformesService {
 
     PnvInformes findById(Long id);
 
+    PnvInformes findByInformation(Integer anio, Integer trimestre);
+
 }
