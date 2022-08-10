@@ -1,7 +1,5 @@
 package mx.gob.sedatu.dgdusv.sniiv.utilities;
 
-import org.checkerframework.checker.nullness.Opt;
-
 import java.util.Optional;
 
 public enum TrimestreEnum {
@@ -16,7 +14,7 @@ public enum TrimestreEnum {
     public String getLabel(){return label;}
     public Integer getTrimestre(){return trimestre;}
 
-    private TrimestreEnum(String label,Integer trimestre) {
+    TrimestreEnum(String label,Integer trimestre) {
         this.label = label;
         this.trimestre = trimestre;
     }

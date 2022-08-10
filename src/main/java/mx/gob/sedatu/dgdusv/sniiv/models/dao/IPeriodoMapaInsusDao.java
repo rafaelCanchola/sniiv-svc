@@ -10,4 +10,6 @@ public interface IPeriodoMapaInsusDao extends JpaRepository<PeriodoMapaInsus,Lon
     @Query(value="SELECT MAX(anio) FROM c_periodo_mapa_insus",nativeQuery=true)
     Integer getLastYear();
 
+    PeriodoMapaInsus getPeriodoMapaInsusByAnio(Integer year);
+
 }

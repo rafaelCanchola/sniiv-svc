@@ -55,5 +55,7 @@ public interface IFeatureService {
 
 	Long getSumAccionesTownByWomen(String state,String muni,Integer year);
 
+	FeatureInsus featureExists(String nomPoli);
+
 
 }

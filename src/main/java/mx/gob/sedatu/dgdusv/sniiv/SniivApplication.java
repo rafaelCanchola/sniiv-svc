@@ -30,22 +30,22 @@ public class SniivApplication extends SpringBootServletInitializer {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/api/poligonosmexico").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/poligonosinsus").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/poligonosmexicoconteo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/poligonosconteo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/poliinsusall").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/polimexicoall").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/uploadchargepoli").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/getMaxByState").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/getMaxByTown").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/periodo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/allPeriodos").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/prueba").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/uploadpnv").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/api/uploadpnvreporte").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosmexico").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosinsus").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosmexicoconteo").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosconteo").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poliinsusall").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/polimexicoall").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadchargepoli").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/getMaxByState").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/getMaxByTown").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/periodo").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/allPeriodos").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/prueba").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadpnv").allowedOrigins(env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadpnvreporte").allowedOrigins(env.getProperty("app.cross.origins"));
 
 
 			}

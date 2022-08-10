@@ -113,11 +113,20 @@ public class FeatureServiceImpl implements IFeatureService{
 	public Long getCountOfMuniFromState(String state,Integer year){return featureDao.getCountOfMuniFromState(state,year);}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getSumAccionesTownByTotal(String state, String muni,Integer year) { return featureDao.getSumAccionesTownByTotal(state, muni,year); }
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getSumAccionesTownByMen(String state, String muni,Integer year) { return featureDao.getSumAccionesTownByMen(state, muni,year); }
 
 	@Override
+	@Transactional(readOnly = true)
 	public Long getSumAccionesTownByWomen(String state, String muni,Integer year) { return featureDao.getSumAccionesTownByWomen(state, muni,year); }
+
+	@Override
+	@Transactional(readOnly = true)
+	public FeatureInsus featureExists(String nomPoli) {
+		return featureDao.featureExists(nomPoli);
+	}
 }

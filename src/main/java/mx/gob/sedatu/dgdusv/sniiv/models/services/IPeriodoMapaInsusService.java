@@ -16,5 +16,7 @@ public interface IPeriodoMapaInsusService {
 
     Integer getLastYear();
 
+    PeriodoMapaInsus findByYear(Integer year);
+
 
 }

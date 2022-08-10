@@ -36,4 +36,9 @@ public class PeriodoMapaInsusServiceImpl implements IPeriodoMapaInsusService{
     public Integer getLastYear() {
         return periodoMapaInsusDao.getLastYear();
     }
+
+    @Override
+    public PeriodoMapaInsus findByYear(Integer year) {
+        return periodoMapaInsusDao.getPeriodoMapaInsusByAnio(year);
+    }
 }

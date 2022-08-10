@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/gis-api")
 public class UploadRestController {
 
     @Autowired
@@ -341,22 +341,25 @@ public class UploadRestController {
             if (type.contains(Constants.POLIGONO_NAME)) {
                 List<Poligono> poligonoInsert = shapeUtils.readGeometryIntoPolygon(shapesNames);
                 List<FeatureInsus> shapeInsert = shapeUtils.readShapeIntoObjectPredio(shapesNames);
-                for (PeriodoMapaInsus period : periodoMapaInsusService.findAll()){
-                    if(shapeInsert.get(0).getAnio().equals(period.getAnio())){
-                        return false;
-                    }
-                }
                 PeriodoMapaInsus per = new PeriodoMapaInsus();
-                per.setAnio(shapeInsert.get(0).getAnio());
-                periodoMapaInsusService.save(per);
+                if(periodoMapaInsusService.findByYear(shapeInsert.get(0).getAnio()) == null){
+                    per.setAnio(shapeInsert.get(0).getAnio());
+                    periodoMapaInsusService.save(per);
+                }
                 for (int i = 0; i < shapeInsert.size(); i++) {
+                    featureService.featureExists(shapeInsert.get(i).getPoligono());
                     shapeInsert.get(i).setImporte_t(cuboInsusService.getMontosByPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
                     shapeInsert.get(i).setImporte_h(cuboInsusService.getMontosByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
                     shapeInsert.get(i).setImporte_m(cuboInsusService.getMontosByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
                     shapeInsert.get(i).setH(cuboInsusService.getAccionesByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
                     shapeInsert.get(i).setM(cuboInsusService.getAccionesByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                    FeatureInsus featureExists = featureService.featureExists(shapeInsert.get(i).getPoligono());
+                    if(featureExists == null){
                     Poligono jpaPoligono = poligonoService.save(poligonoInsert.get(i));
                     shapeInsert.get(i).setPol(jpaPoligono);
+                    }else{
+                        shapeInsert.get(i).setId(featureExists.getId());
+                    }
                     FeatureInsus jpaShape = featureService.save(shapeInsert.get(i));
                 }
                 return true;
