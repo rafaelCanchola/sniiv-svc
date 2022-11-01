@@ -126,7 +126,7 @@ public class FeatureServiceImpl implements IFeatureService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public FeatureInsus featureExists(String nomPoli) {
-		return featureDao.featureExists(nomPoli);
+	public FeatureInsus featureExists(String nomPoli,Integer year) {
+		return featureDao.featureExists(nomPoli,year);
 	}
 }

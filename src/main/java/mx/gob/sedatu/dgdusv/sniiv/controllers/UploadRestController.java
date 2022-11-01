@@ -51,6 +51,9 @@ public class UploadRestController {
 
     @Autowired
     private IPnvInformesService pnvInformesService;
+
+    @Autowired
+    private IReporteMensualService reporteMensualService;
     @Autowired
     private Environment env;
 
@@ -66,9 +69,57 @@ public class UploadRestController {
     @Autowired
     private ApiAlfresco apiAlfresco;
 
-    @GetMapping("/prueba")
+    @GetMapping("/healthcheck")
     public ResponseEntity<String> prueba(){
-        return ResponseEntity.ok(Constants.AlfrescoEndPoints.NODES);
+        return ResponseEntity.ok("SNIIV-svc running");
+    }
+
+    @PostMapping("/uploadreportemensual")
+    public ResponseEntity<String> cargarReporteMensualAlfresco(@RequestParam MultipartFile file) {
+        Integer year;
+        Integer month;
+        if(!file.getOriginalFilename().contains(Constants.InformePnv.PNV_NAME) || !file.getOriginalFilename().endsWith(Constants.PDF_EXT)){
+            return ResponseEntity.status(401).build();
+        }
+        try{
+            year = Integer.parseInt((file.getOriginalFilename().split(Constants.InformePnv.SPLIT_CHAR)[2]).substring(0,4));
+            month = Integer.parseInt((file.getOriginalFilename().split(Constants.InformePnv.SPLIT_CHAR)[2]).substring(4));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(401).build();
+        }
+        try {
+            JSONObject postUpload = new JSONObject();
+            JSONObject jsonObj;
+            postUpload.put("name",file);
+            postUpload.put("nodeType","cm:content");
+            String response = httpMethods.postFormHttpMethod(apiAlfresco.folderNode(Constants.AlfrescoFolders.FOLDER_MENSUAL_INFORMES),file.getOriginalFilename(),file);
+            jsonObj = new JSONObject(response);
+            String id = ((JSONObject)jsonObj.get("entry")).get("id").toString();
+            postUpload = new JSONObject();
+            postUpload.put("nodeId",id);
+            response = httpMethods.postHttp(apiAlfresco.generateUrl(),postUpload.toString(), httpMethods.authHeader());
+            jsonObj = new JSONObject(response);
+            id = ((JSONObject)jsonObj.get("entry")).get("id").toString();
+            ReporteMensual informe = new ReporteMensual();
+            informe.setAnio(year);
+            informe.setMes(month);
+            informe.setUrl(apiAlfresco.sharedUrlAlfresco(id,file.getOriginalFilename()));
+            ReporteMensual find = reporteMensualService.findByInformation(informe.getAnio(),informe.getMes());
+            if(find != null){
+                informe.setId(find.getId());
+            }
+            reporteMensualService.save(informe);
+            return ResponseEntity.ok(informe.getUrl());
+        }catch (IOException e){
+            e.printStackTrace();
+            //error in httpmethod
+            return ResponseEntity.status(402).build();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //Error in json generation
+            return ResponseEntity.status(411).build();
+        }
     }
 
     @PostMapping("/uploadpnvreporte")
@@ -347,20 +398,23 @@ public class UploadRestController {
                     periodoMapaInsusService.save(per);
                 }
                 for (int i = 0; i < shapeInsert.size(); i++) {
-                    featureService.featureExists(shapeInsert.get(i).getPoligono());
-                    shapeInsert.get(i).setImporte_t(cuboInsusService.getMontosByPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
-                    shapeInsert.get(i).setImporte_h(cuboInsusService.getMontosByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
-                    shapeInsert.get(i).setImporte_m(cuboInsusService.getMontosByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
-                    shapeInsert.get(i).setH(cuboInsusService.getAccionesByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
-                    shapeInsert.get(i).setM(cuboInsusService.getAccionesByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
-                    FeatureInsus featureExists = featureService.featureExists(shapeInsert.get(i).getPoligono());
-                    if(featureExists == null){
-                    Poligono jpaPoligono = poligonoService.save(poligonoInsert.get(i));
-                    shapeInsert.get(i).setPol(jpaPoligono);
+                    FeatureInsus featureExists = featureService.featureExists(shapeInsert.get(i).getPoligono(), shapeInsert.get(i).getAnio());
+                    if (featureExists == null) {
+                        shapeInsert.get(i).setImporte_t(cuboInsusService.getMontosByPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                        shapeInsert.get(i).setImporte_h(cuboInsusService.getMontosByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                        shapeInsert.get(i).setImporte_m(cuboInsusService.getMontosByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                        shapeInsert.get(i).setH(cuboInsusService.getAccionesByMenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                        shapeInsert.get(i).setM(cuboInsusService.getAccionesByWomenPolygon(shapeInsert.get(i).getPoligono(),shapeInsert.get(i).getAnio()));
+                        if(shapeInsert.get(i).getImporte_t() != null || shapeInsert.get(i).getImporte_m() != null || shapeInsert.get(i).getImporte_h() != null || shapeInsert.get(i).getH() != null || shapeInsert.get(i).getM() != null) {
+                            Long acciones = (shapeInsert.get(i).getH() == null ? 0l : shapeInsert.get(i).getH()) + (shapeInsert.get(i).getM() == null ? 0l : shapeInsert.get(i).getM());
+                            shapeInsert.get(i).setAcciones(acciones);
+                            Poligono jpaPoligono = poligonoService.save(poligonoInsert.get(i));
+                            shapeInsert.get(i).setPol(jpaPoligono);
+                            FeatureInsus jpaShape = featureService.save(shapeInsert.get(i));
+                        }
                     }else{
-                        shapeInsert.get(i).setId(featureExists.getId());
+                        System.out.println("exists: "+featureExists.getPoligono());
                     }
-                    FeatureInsus jpaShape = featureService.save(shapeInsert.get(i));
                 }
                 return true;
             } else if (type.contains(Constants.ESTADO_NAME)||type.contains(Constants.MUNICIPIO_NAME)) {

@@ -43,6 +43,7 @@ public class Constants {
         public static final String FOLDER_PUNTOS = "97f4e1a0-fdd6-4870-9394-1d26fae23739";
         public static final String FOLDER_ZIPS = "350f40d3-c8b0-4da1-a809-9a766de5340e";
         public static final String FOLDER_PNV_INFORMES = "36b4f619-4cc1-4da3-b855-a1dbf545d968";
+        public static final String FOLDER_MENSUAL_INFORMES ="32bc9904-2e6b-424d-a8c2-e8901c89c801";
 
     }
 
@@ -64,6 +65,7 @@ public class Constants {
         public static final String FOURTH_TRIM = "4to";
         public static final String PNV_NAME = "informe_trimestral_PNV";
         public static final String SPLIT_CHAR = "_";
+        public static final String MONTHLY_REPORT_NAME = "reporte_mensual";
 
     }
 }

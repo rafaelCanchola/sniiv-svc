@@ -59,8 +59,8 @@ public interface IFeatureDao extends JpaRepository<FeatureInsus,Long>{
     @Query(value="SELECT SUM(m) FROM features_insus WHERE clave_estado = ?1 AND clave_municipio = ?2 AND anio = ?3",nativeQuery=true)
     Long getSumAccionesTownByWomen(String state,String muni,Integer year);
 
-    @Query(value="SELECT * FROM features_insus WHERE poligono LIKE ?1 ",nativeQuery=true)
-    FeatureInsus featureExists(String nomPoli);
+    @Query(value="SELECT * FROM features_insus WHERE poligono = ?1 and anio = ?2 ",nativeQuery=true)
+    FeatureInsus featureExists(String nomPoli, Integer anio);
 
 
 }

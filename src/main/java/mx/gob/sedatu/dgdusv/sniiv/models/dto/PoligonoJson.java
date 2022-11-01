@@ -35,6 +35,5 @@ public class PoligonoJson implements Serializable{/**
 
 	@Setter @Getter
 	private Long min;
-	
-	
+
 }

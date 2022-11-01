@@ -17,37 +17,36 @@ public class SniivApplication extends SpringBootServletInitializer {
 		SpringApplication.run(SniivApplication.class, args);
 	}
 
+	@Autowired
+	private Environment env;
+
+	private String ownOrigin = "http://172.16.15.94";
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(SniivApplication.class);
 	}
 
-	@Autowired
-	private Environment env;
-	
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/gis-api/poligonosmexico").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/poligonosinsus").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/poligonosmexicoconteo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/poligonosconteo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/poliinsusall").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/polimexicoall").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/uploadchargepoli").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/predioidentify").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/getMaxByState").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/getMaxByTown").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/periodo").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/allPeriodos").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/prueba").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/uploadpnv").allowedOrigins(env.getProperty("app.cross.origins"));
-				registry.addMapping("/gis-api/uploadpnvreporte").allowedOrigins(env.getProperty("app.cross.origins"));
-
-
+				registry.addMapping("/gis-api/poligonosmexico").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosinsus").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosmexicoconteo").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosconteo").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/predioidentify").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poliinsusall").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/polimexicoall").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadchargepoli").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/predioidentify").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/getMaxByState").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/getMaxByTown").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/periodo").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/allPeriodos").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/prueba").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadpnv").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/uploadpnvreporte").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
 			}
 		};
 	}

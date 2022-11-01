@@ -10,6 +10,7 @@ import mx.gob.sedatu.dgdusv.sniiv.models.services.*;
 import java.util.*;
 
 import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,7 +96,7 @@ public class FeatureRestController {
 	}
 
 	@GetMapping("/poligonosinsus")
-	public ResponseEntity<List<PoligonoJson>> poligonosInsus(@RequestParam boolean isMontos,@RequestParam Integer year,@RequestParam String filter, @RequestParam Long pgnumber, @RequestParam Long pgsize, @RequestParam Double xmin, @RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
+	public ResponseEntity<List<PoligonoJson>> poligonosInsus(@RequestParam boolean isMontos,@RequestParam Integer year,@RequestParam String filter, @RequestParam Long pgnumber, @RequestParam Long pgsize, @RequestParam Double xmin, @RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax, @RequestParam boolean isPoligono){
 		Envelope en = new Envelope(xmin,xmax,ymin,ymax);
 		//List<Feature> fa = featureService.findAll();
 		Pageable pb = PageRequest.of(pgnumber.intValue(), pgsize.intValue());
@@ -106,7 +107,8 @@ public class FeatureRestController {
 		for(FeatureInsus p : pf) {
 			if(en.intersects(p.getPol().getThe_geom().getCoordinate().getX(),p.getPol().getThe_geom().getCoordinate().getY())) {
 				if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni)) {
-					pj.add(new PoligonoJson(p.getId(), p.getPol().getThe_geom().toString(), p.getPoligono(), isMontos ? p.getImporte_t() : p.getAcciones(), isMontos ? p.getImporte_h() : p.getH(), isMontos ? p.getImporte_m() : p.getM(), getMaxMinByPoli(isMontos,year,true,estado,muni).getBody(), getMaxMinByPoli(isMontos,year,false,estado,muni).getBody()));
+					String polygon = (isPoligono ? p.getPol().getThe_geom().toString(): p.getPol().getThe_geom().getCentroid().getCoordinate().toString());
+					pj.add(new PoligonoJson(p.getId(),polygon , p.getPoligono(), isMontos ? p.getImporte_t() : p.getAcciones(), isMontos ? p.getImporte_h() : p.getH(), isMontos ? p.getImporte_m() : p.getM(), getMaxMinByPoli(isMontos,year,true,estado,muni).getBody(), getMaxMinByPoli(isMontos,year,false,estado,muni).getBody()));
 				}
 			}
 		}
