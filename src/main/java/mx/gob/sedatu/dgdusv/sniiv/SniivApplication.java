@@ -47,6 +47,9 @@ public class SniivApplication extends SpringBootServletInitializer {
 				registry.addMapping("/gis-api/prueba").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
 				registry.addMapping("/gis-api/uploadpnv").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
 				registry.addMapping("/gis-api/uploadpnvreporte").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosinsusmaxmin").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+				registry.addMapping("/gis-api/poligonosmexicomaxmin").allowedOrigins(ownOrigin,env.getProperty("app.cross.origins"));
+
 			}
 		};
 	}

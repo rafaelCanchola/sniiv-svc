@@ -106,15 +106,91 @@ public class FeatureRestController {
 		String muni = filter.substring(2);
 		for(FeatureInsus p : pf) {
 			if(en.intersects(p.getPol().getThe_geom().getCoordinate().getX(),p.getPol().getThe_geom().getCoordinate().getY())) {
-				if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni)) {
-					String polygon = (isPoligono ? p.getPol().getThe_geom().toString(): p.getPol().getThe_geom().getCentroid().getCoordinate().toString());
+				if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni) && p.getAnio().equals(year) ) {
+					String polygon = (isPoligono ? p.getPol().getThe_geom().toString(): p.getPol().getThe_geom().getCentroid().toString());
 					pj.add(new PoligonoJson(p.getId(),polygon , p.getPoligono(), isMontos ? p.getImporte_t() : p.getAcciones(), isMontos ? p.getImporte_h() : p.getH(), isMontos ? p.getImporte_m() : p.getM(), getMaxMinByPoli(isMontos,year,true,estado,muni).getBody(), getMaxMinByPoli(isMontos,year,false,estado,muni).getBody()));
 				}
 			}
 		}
 		return ResponseEntity.ok(pj);
 	}
-	
+
+	@GetMapping("/poligonosmexicomaxmin")
+	public ResponseEntity<List<Long>> getMaxMinPoligonosMexico(@RequestParam boolean isMontos,@RequestParam Integer year,@RequestParam String filter, @RequestParam Double xmin, @RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
+		Envelope en = new Envelope(xmin,xmax,ymin,ymax);
+		//List<Feature> fa = featureService.findAll();
+		List<FeatureMexico> all = featureMexicoService.findAll();
+		List<Long> pj = new ArrayList<>();
+		Long max = 0l;
+		Long min = 0l;
+
+		for(FeatureMexico p : all) {
+			if(filter.equals("MEX")){//get all estados
+				if(Integer.parseInt(p.getClave_geo()) <= 32){
+					Long total = isMontos ? featureService.getSumStateByTotal(p.getClave_geo(),year) : featureService.getSumAccionesStateByTotal(p.getClave_geo(),year);
+						if(total != null){
+							if(max.equals(0l) && min.equals(0l)) {
+								max = total;
+								min = max;
+							}
+							else{
+								max = total.compareTo(max) >= 0 ? total : max ;
+								min = total.compareTo(min) <= 0 ? total : min ;
+							}
+						}
+				}
+			}else{
+				if(p.getClave_geo().startsWith(filter) && !p.getClave_geo().equals(filter)){
+					if(Integer.parseInt(p.getClave_geo()) > 32){
+							String state = p.getClave_geo().substring(0,2);
+							String muni = p.getClave_geo().substring(2);
+							Long total = isMontos ? featureService.getSumTownByTotal(state,muni,year) : featureService.getSumAccionesTownByTotal(state,muni,year);
+							if(total != null) {
+								if(max.equals(0l) && min.equals(0l)) {
+									max = total;
+									min = max;
+								}
+								else{
+									max = total.compareTo(max) >= 0 ? total : max ;
+									min = total.compareTo(min) <= 0 ? total : min ;
+								}
+							}
+					}
+				}
+			}
+		}
+		pj.add(min);
+		pj.add(max);
+		return ResponseEntity.ok(pj);
+	}
+
+	@GetMapping("/poligonosinsusmaxmin")
+	public ResponseEntity<List<Long>> getMaxMinPoligonosInsus(@RequestParam boolean isMontos,@RequestParam Integer year,@RequestParam String filter, @RequestParam Double xmin, @RequestParam Double xmax, @RequestParam Double ymin, @RequestParam Double ymax){
+		Envelope en = new Envelope(xmin,xmax,ymin,ymax);
+		List<FeatureInsus> all = featureService.findAll();
+		List<Long> pj = new ArrayList<>();
+		Long max = 0l;
+		Long min = 0l;
+		String estado = filter.substring(0,2);
+		String muni = filter.substring(2);
+		for(FeatureInsus p : all) {
+			if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni) && p.getAnio().equals(year)) {
+				if(max.equals(0l) && min.equals(0l)) {
+					max = isMontos ? p.getImporte_t() : p.getAcciones();
+					min = max;
+				}
+				else{
+					Long compare = isMontos ? p.getImporte_t() : p.getAcciones();
+					max = compare.compareTo(max) >= 0 ? compare : max ;
+					min = compare.compareTo(min) <= 0 ? compare : min ;
+				}
+			}
+		}
+		pj.add(min);
+		pj.add(max);
+		return ResponseEntity.ok(pj);
+	}
+
 	@GetMapping("/poliinsusall")
 	public ResponseEntity<List<PoligonoJson>> allInsusPoints(){
 		List<FeatureInsus> fa = featureService.findAll();
