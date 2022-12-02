@@ -105,10 +105,12 @@ public class FeatureRestController {
 		String estado = filter.substring(0,2);
 		String muni = filter.substring(2);
 		for(FeatureInsus p : pf) {
-			if(en.intersects(p.getPol().getThe_geom().getCoordinate().getX(),p.getPol().getThe_geom().getCoordinate().getY())) {
-				if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni) && p.getAnio().equals(year) ) {
-					String polygon = (isPoligono ? p.getPol().getThe_geom().toString(): p.getPol().getThe_geom().getCentroid().toString());
-					pj.add(new PoligonoJson(p.getId(),polygon , p.getPoligono(), isMontos ? p.getImporte_t() : p.getAcciones(), isMontos ? p.getImporte_h() : p.getH(), isMontos ? p.getImporte_m() : p.getM(), getMaxMinByPoli(isMontos,year,true,estado,muni).getBody(), getMaxMinByPoli(isMontos,year,false,estado,muni).getBody()));
+			if(p.getPol() != null) {
+				if (en.intersects(p.getPol().getThe_geom().getCoordinate().getX(), p.getPol().getThe_geom().getCoordinate().getY())) {
+					if (p.getClave_estado().equals(estado) && p.getClave_municipio().equals(muni) && p.getAnio().equals(year)) {
+						String polygon = (isPoligono ? p.getPol().getThe_geom().toString() : p.getPol().getThe_geom().getCentroid().toString());
+						pj.add(new PoligonoJson(p.getId(), polygon, p.getPoligono(), isMontos ? p.getImporte_t() : p.getAcciones(), isMontos ? p.getImporte_h() : p.getH(), isMontos ? p.getImporte_m() : p.getM(), getMaxMinByPoli(isMontos, year, true, estado, muni).getBody(), getMaxMinByPoli(isMontos, year, false, estado, muni).getBody()));
+					}
 				}
 			}
 		}
